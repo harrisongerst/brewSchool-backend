@@ -14,6 +14,8 @@ const cors = require("cors");
 const morgan = require("morgan");
 //models
 const models = require("./models");
+const Post = models.Post;
+const User = models.User;
 
 //db connection
 mongoose.connect(MONGODB_URL, {
@@ -37,4 +39,12 @@ app.get("/", (req, res) => {
     res.send("hello world");
   });
 //listener
+
+app.get("/users/", async (req, res) => {
+    try {
+        res.json(await User.find({}));
+    } catch (error) {
+        res.status(400).json(error);
+    }
+})
 app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
