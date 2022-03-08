@@ -5,9 +5,13 @@ const userSchema = new Schema({
     username: {
         type: String, 
         required: true, 
+        unique: true,
+        min: 5,
+        max: 15
     },
     password: {
-        type: String, 
+        type: String,
+        required: true, 
     },
     //Relationship to posts
     posts: [{
