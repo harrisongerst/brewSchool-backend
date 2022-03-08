@@ -66,4 +66,14 @@ app.post("/users/", async (req, res) => {
     }
 });
 
+app.post("/posts/", async (req, res) => {
+    try {
+      // send all people
+        res.json(await Post.create(req.body));
+    } catch (error) {
+      //send error
+        res.status(400).json(error);
+    }
+});
+
 app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
