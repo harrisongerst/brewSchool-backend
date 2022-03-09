@@ -56,6 +56,14 @@ app.get("/posts/", async (req, res) => {
     }
 });
 
+app.get("/posts/:id", async (req, res) => {
+  try {
+      res.json(await Post.findOne({"_id": req.params.id}));
+  } catch{
+      res.status(400).json(error);
+  }
+});
+
 app.post("/users/", async (req, res) => {
     try {
       // send all people
