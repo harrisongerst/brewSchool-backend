@@ -11,7 +11,8 @@ const postSchema = new mongoose.Schema({
     coffeeAmount: {type: Number, required: true, min: [6, 'Must enter 6 or more grams, got {VALUE}']},
     iced: {type: Boolean, required: true},
     brewTimeSeconds: {type: Number, required: true, min: [60, 'Brew time must exceed 60 seconds, got {VALUE}']},
-    requiredEquipment: {type: [String], required: false}
+    requiredEquipment: {type: [String], required: false},
+    instructions: {type: [String], required: true}
 });
 
 const Post = mongoose.model('Post', postSchema);
