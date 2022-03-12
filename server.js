@@ -5,6 +5,7 @@ require("dotenv").config();
 const { PORT = 4000, MONGODB_URL } = process.env;
 // import express
 const express = require("express");
+const bcrypt = require("bcrypt")
 // create application object
 const app = express();
 // import mongoose
@@ -83,5 +84,22 @@ app.post("/posts/", async (req, res) => {
         res.status(400).json(error);
     }
 });
+
+app.post("/register/", async (req, res) => {
+  const user = req.body;
+  const existingUser = await User.findOne({username: user.username});
+  if(existingUser){
+    res.json({message: "This username already exists"});
+  }
+  else{
+    user.password = await bcrypt.hash(req.body.password, 10);
+    const dbUser = new User({
+      username: user.username.toLowerCase(),
+      password: user.password
+    });
+    dbUser.save();
+    res.json({message: "success"});
+  }
+})
 
 app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
