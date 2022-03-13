@@ -98,7 +98,8 @@ app.post("/register/", async (req, res) => {
 app.post("/login", (req, res) => {
   const userLogIn = req.body;
 
-  User.findOne({username: userLogIn.username})
+
+  User.findOne({username: userLogIn.username.toLowerCase()})
   .then(dbUser => {
     if(!dbUser){
       return res.json({message: "Invalid Username or Password"})
