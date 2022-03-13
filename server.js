@@ -6,6 +6,7 @@ const { PORT = 4000, MONGODB_URL } = process.env;
 // import express
 const express = require("express");
 const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 // create application object
 const app = express();
 // import mongoose
@@ -76,6 +77,7 @@ app.post("/posts/", async (req, res) => {
     }
 });
 
+//registration route, checks for existing user if no user exists creates user, hashes password, saves to db
 app.post("/register/", async (req, res) => {
   const user = req.body;
   const existingUser = await User.findOne({username: user.username});
@@ -91,6 +93,41 @@ app.post("/register/", async (req, res) => {
     dbUser.save();
     res.json({message: "success"});
   }
-})
+});
+
+app.post("/login", (req, res) => {
+  const userLogIn = req.body;
+
+  User.findOne({username: userLogIn.username})
+  .then(dbUser => {
+    if(!dbUser){
+      return res.json({message: "Invalid Username or Password"})
+    }
+    bcrypt.compare(userLogIn.password, dbUser.password)
+    .then(isCorrectPW => {
+      if(isCorrectPW){
+        const payload = {
+          id: dbUser._id,
+          username: dbUser.username
+        }
+        jwt.sign(
+          payload,
+          process.env.JWT_SECRET,
+          {expiresIn: 3600},
+          (err, token) => {
+            if(err) return res.json({message: err})
+            return res.json({
+              message: "Successful Login",
+              token: "Bearer " + token
+            })
+          }
+        )
+      }
+      else{
+        return res.json({message: "Invalid Username or Password"})
+      }
+    })
+  })
+});
 
 app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
