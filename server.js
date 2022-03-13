@@ -37,8 +37,8 @@ app.use(express.json()); // parse json bodies
 
 //middleware function for jwt verification
 function verifyJWT(req, res, next){
-  const token = req.headers["x-access-token"]?.split(' ')[1];
-
+  const token = req.headers["x-access-token"];
+  console.log(token);
   if(token){
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) return res.json({
@@ -143,7 +143,7 @@ app.post("/login", (req, res) => {
             if(err) return res.json({message: err})
             return res.json({
               message: "Successful Login",
-              token: "Bearer " + token
+              token: token
             })
           }
         )
