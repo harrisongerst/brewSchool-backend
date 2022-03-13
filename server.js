@@ -35,6 +35,27 @@ app.use(cors()); // to prevent cors errors, open access to all origins
 app.use(morgan("dev")); // logging
 app.use(express.json()); // parse json bodies
 
+//middleware function for jwt verification
+function verifyJWT(req, res, next){
+  const token = req.headers["x-access-token"]?.split(' ')[1];
+
+  if(token){
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) return res.json({
+        isLoggedIn: false,
+        message: "Authenication Failed"
+      })
+      req.user = {};
+      req.user.id = decoded.id;
+      req.user.username = decoded.username;
+      next();
+    })
+  }
+  else{
+    res.json({message: "Incorrect token given", isLoggedIn: false});
+  }
+}
+
 //routes
 //for testing
 app.get("/", (req, res) => {
@@ -66,6 +87,9 @@ app.get("/posts/:id", async (req, res) => {
   }
 });
 
+app.get("/userLoggedIn", verifyJWT, (req, res) => {
+  res.json({isLoggedIn: true, username: req.user.username});
+})
 
 app.post("/posts/", async (req, res) => {
     try {
