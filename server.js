@@ -65,15 +65,6 @@ app.get("/posts/:id", async (req, res) => {
   }
 });
 
-app.post("/users/", async (req, res) => {
-    try {
-      // send all people
-        res.json(await User.create(req.body));
-    } catch (error) {
-      //send error
-        res.status(400).json(error);
-    }
-});
 
 app.post("/posts/", async (req, res) => {
     try {
