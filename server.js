@@ -38,7 +38,6 @@ app.use(express.json()); // parse json bodies
 //middleware function for jwt verification
 function verifyJWT(req, res, next){
   const token = req.headers["x-access-token"];
-  console.log(token);
   if(token){
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) return res.json({
@@ -119,11 +118,11 @@ app.post("/register/", async (req, res) => {
   }
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   const userLogIn = req.body;
 
 
-  User.findOne({username: userLogIn.username.toLowerCase()})
+ await User.findOne({username: userLogIn.username.toLowerCase()})
   .then(dbUser => {
     if(!dbUser){
       return res.json({message: "Invalid Username or Password"})
