@@ -128,15 +128,15 @@ app.post("/posts", verifyJWT, async (req, res) => {
     }
 });
 
-app.put("/posts/:id", async (req, res) => {
+app.put("/posts/:id", verifyJWT,async (req, res) => {
   try {
     const currentUser = req.user.username;
     const currentPost = await Post.findById(req.params.id);
     const newPost = req.body;
     const equipArr = newPost.requiredEquipment.split(",");
     const instructionsArr = newPost.instructions.split(",");
-    
-    if(currentPost.username == currentUser){
+
+    if(currentUser == currentPost.username){
         currentPost.title = newPost.title;
         currentPost.description = newPost.description;
         currentPost.brewType = newPost.brewType;
