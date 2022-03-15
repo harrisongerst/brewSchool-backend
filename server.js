@@ -91,7 +91,7 @@ app.get("/userLoggedIn", verifyJWT, (req, res) => {
   res.json({isLoggedIn: true, username: req.user.username});
 })
 
-app.post("/posts/", verifyJWT, async (req, res) => {
+app.post("/posts", verifyJWT, async (req, res) => {
     try {
       const newPost = req.body
       const currentUser = req.user;
