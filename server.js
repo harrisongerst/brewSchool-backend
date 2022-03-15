@@ -163,6 +163,21 @@ app.put("/posts/:id", verifyJWT,async (req, res) => {
   }
 })
 
+app.delete("/post/:id", async (req, res) => {
+  try{
+    const postToDelete = await Post.findById(req.params.id);
+    if(req.user.username == postToDelete.username){
+      Post.findByIdAndDelete(req.params.id);
+      res.json({
+        success: true,
+        message: "Post deleted"
+      })
+    }
+  }
+  catch(error) {
+    res.status(400).json(error);
+  }
+})
 //registration route; checks for existing user if no user exists creates user, hashes password, saves to db
 app.post("/register/", async (req, res) => {
   const user = req.body;
