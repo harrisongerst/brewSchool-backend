@@ -128,7 +128,7 @@ app.post("/posts", verifyJWT, async (req, res) => {
     }
 });
 
-app.put("posts/:id", async (req, res) => {
+app.put("/posts/:id", async (req, res) => {
   try {
     const currentUser = req.user.username;
     const currentPost = await Post.findById(req.params.id);
