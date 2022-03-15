@@ -121,13 +121,49 @@ app.post("/posts", verifyJWT, async (req, res) => {
 
       res.status(201).json("New post created");
       
-    } catch (error) {
+    } 
+    catch (error) {
       //send error
         res.status(400).json(error);
     }
 });
 
-//registration route, checks for existing user if no user exists creates user, hashes password, saves to db
+app.put("posts/:id", async (req, res) => {
+  try {
+    const currentUser = req.user.username;
+    const currentPost = await Post.findById(req.params.id);
+    const newPost = req.body;
+    const equipArr = newPost.requiredEquipment.split(",");
+    const instructionsArr = newPost.instructions.split(",");
+    
+    if(currentPost.username == currentUser){
+        currentPost.title = newPost.title;
+        currentPost.description = newPost.description;
+        currentPost.brewType = newPost.brewType;
+        currentPost.coffeeAmount = newPost.coffeeAmount;
+        currentPost.iced = newPost.iced;
+        currentPost.brewTimeSeconds = newPost.brewTimeSeconds;
+        currentPost.requiredEquipment = equipArr;
+        currentPost.instructions = instructionsArr
+
+        currentPost.save(function(err) {
+          if(err){
+            res.send(err);
+            return
+          }
+          res.json({
+            success: true,
+            message: "Post info updato"
+          })
+        })
+    }
+  }
+  catch(error) {
+    res.status(400).json(error);
+  }
+})
+
+//registration route; checks for existing user if no user exists creates user, hashes password, saves to db
 app.post("/register/", async (req, res) => {
   const user = req.body;
   const existingUser = await User.findOne({username: user.username});
