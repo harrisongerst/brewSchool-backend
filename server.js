@@ -163,7 +163,7 @@ app.put("/posts/:id", verifyJWT,async (req, res) => {
   }
 })
 
-app.delete("/post/:id", async (req, res) => {
+app.delete("/post/:id", verifyJWT, async (req, res) => {
   try{
     const postToDelete = await Post.findById(req.params.id);
     if(req.user.username == postToDelete.username){
