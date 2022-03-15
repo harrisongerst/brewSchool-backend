@@ -31,6 +31,7 @@ mongoose.connection
   .on("close", () => console.log("Your are disconnected from mongoose"))
   .on("error", (error) => console.log(error));
 //middleware
+
 app.use(cors()); // to prevent cors errors, open access to all origins
 app.use(morgan("dev")); // logging
 app.use(express.json()); // parse json bodies
@@ -100,7 +101,7 @@ app.post("/posts/", verifyJWT, async (req, res) => {
 
 
       const dbPost = new Post({
-        username: currentUser,
+        username: currentUser.username,
         title: newPost.title,
         description: newPost.description,
         brewType: newPost.brewType,
@@ -110,8 +111,14 @@ app.post("/posts/", verifyJWT, async (req, res) => {
         requiredEquipment: equipArr,
         instructions: instructionsArr
       })
-      
+
       dbPost.save();
+
+      await User.updateOne(
+        {username: currentUser.username},
+        {$push: {posts: dbPost._id}}
+      )
+      
     } catch (error) {
       //send error
         res.status(400).json(error);
