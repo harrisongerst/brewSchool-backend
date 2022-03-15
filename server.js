@@ -118,6 +118,8 @@ app.post("/posts", verifyJWT, async (req, res) => {
         {username: currentUser.username},
         {$push: {posts: dbPost._id}}
       )
+
+      res.status(201).json("New post created");
       
     } catch (error) {
       //send error
