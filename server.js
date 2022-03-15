@@ -90,10 +90,28 @@ app.get("/userLoggedIn", verifyJWT, (req, res) => {
   res.json({isLoggedIn: true, username: req.user.username});
 })
 
-app.post("/posts/", async (req, res) => {
+app.post("/posts/", verifyJWT, async (req, res) => {
     try {
-      // send all people
-        res.json(await Post.create(req.body));
+      const newPost = req.body
+      const currentUser = req.user;
+
+      const equipArr = newPost.requiredEquipment.split(",");
+      const instructionsArr = newPost.instructions.split(",");
+
+
+      const dbPost = new Post({
+        username: currentUser,
+        title: newPost.title,
+        description: newPost.description,
+        brewType: newPost.brewType,
+        coffeeAmount: newPost.coffeeAmount,
+        iced: newPost.iced,
+        brewTimeSeconds: newPost.brewTimeSeconds,
+        requiredEquipment: equipArr,
+        instructions: instructionsArr
+      })
+      
+      dbPost.save();
     } catch (error) {
       //send error
         res.status(400).json(error);
