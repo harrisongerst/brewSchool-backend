@@ -163,7 +163,7 @@ app.put("/posts/:id", verifyJWT,async (req, res) => {
   }
 })
 
-app.delete("/post/:id", verifyJWT, async (req, res) => {
+app.delete("/posts/:id", verifyJWT, async (req, res) => {
   try{
     const postToDelete = await Post.findById(req.params.id);
     if(req.user.username == postToDelete.username){
@@ -178,6 +178,7 @@ app.delete("/post/:id", verifyJWT, async (req, res) => {
     res.status(400).json(error);
   }
 })
+
 //registration route; checks for existing user if no user exists creates user, hashes password, saves to db
 app.post("/register/", async (req, res) => {
   const user = req.body;
