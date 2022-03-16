@@ -167,7 +167,7 @@ app.delete("/posts/:id", verifyJWT, async (req, res) => {
   try{
     const postToDelete = await Post.findById(req.params.id);
     if(req.user.username == postToDelete.username){
-      Post.findByIdAndDelete(req.params.id);
+      await Post.findByIdAndDelete(req.params.id);
       console.log(req.params.id)
       res.json({
         success: true,
